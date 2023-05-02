@@ -1,0 +1,26 @@
+# The main entry point of your workflow.
+include: "rules/common.smk"
+
+# file setup
+
+def get_bam(wildcards):
+    return {'tumour': samples.loc[(wildcards.sample), ["tumour_bam"]],
+     'normal': samples.loc[(wildcards.sample), ["normal_bam"]]}
+
+# After configuring, running snakemake -n in a clone of this repository should successfully execute a dry-run of the workflow.
+
+report: "report/workflow.rst"
+
+localrules: all
+
+rule all:
+    input:
+        "test_out.txt"
+        # The first rule should define the default target files
+        # Subsequent target rules can be specified below. They should start with all_*.
+
+include: "rules/other.smk"
+
+# Pipeline rules
+include: "rules/ascat.smk"
+include: "rules/combine.smk"
