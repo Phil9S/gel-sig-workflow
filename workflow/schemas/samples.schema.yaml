@@ -14,4 +14,9 @@ properties:
 # columns that the config/samples.tsv file must have to pass schema validation
 required:
   - sample
-  - condition
+  - tumour_bam
+  - normal_bam
+  - tumour_name
+  - normal_name
+  - sex
+  - build

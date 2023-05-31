@@ -12,3 +12,4 @@ samples = pd.read_csv(config["samples"], sep="\t").set_index("sample", drop=Fals
 samples.index.names = ["sample_id"]
 validate(samples, schema="../schemas/samples.schema.yaml")
 
+out_dir = config["out_dir"]

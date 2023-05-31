@@ -1,3 +1,3 @@
-sample	condition	tumour_bam	normal_bam
-A	untreated	test_data/fileA_T.bam	test_data/fileA_N.bam
-B	treated	test_data/fileB_T.bam	test_data/fileB_N.bam
+sample	tumour_bam	normal_bam	tumour_name	normal_name	sex	build
+BRITROC-100	/mnt/scratcha/fmlab/smith10/gel/bams/100_tumor_JBLAB-4218-ready.bam	/mnt/scratcha/fmlab/smith10/gel/bams/100_normal_JBLAB-4376-ready.bam	JBLAB-4218	JBLAB-4376	XX	hg19
+BRITROC-103	/mnt/scratcha/fmlab/smith10/gel/bams/103_tumor_JBLAB-4221-ready.bam	/mnt/scratcha/fmlab/smith10/gel/bams/103_normal_JBLAB-4349-ready.bam	JBLAB-4221	JBLAB-4349	XX	hg19
