@@ -13,3 +13,6 @@ samples.index.names = ["sample_id"]
 validate(samples, schema="../schemas/samples.schema.yaml")
 
 out_dir = config["out_dir"]
+image_base_url = config["image_base_url"]
+genome = config["genome"]
+method = config["method"]

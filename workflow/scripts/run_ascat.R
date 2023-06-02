@@ -89,6 +89,5 @@ QC = ascat.metrics(ascat.bc,ascat.output)
 
 save(ascat.bc, ascat.output, QC, file = paste0(OUTTARGET,SAMPLE,"_ASCAT_objects.Rdata"))
 
-writeLines(args,OUTPUT)
 sessionInfo()
 
