@@ -17,3 +17,5 @@ analysis/*
 !LICENSE
 !README.md
 !results/
+!profile
+!profile/*
