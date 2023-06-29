@@ -17,7 +17,7 @@ class CookieCutter:
 
     @staticmethod
     def get_default_project() -> str:
-        return ""
+        return "re_gecip_cancer_pan"
 
     @staticmethod
     def get_lsf_unit_for_limits() -> str:
@@ -33,7 +33,7 @@ class CookieCutter:
 
     @staticmethod
     def get_latency_wait() -> float:
-        return float("15")
+        return float("60")
 
     @staticmethod
     def get_wait_between_tries() -> float:

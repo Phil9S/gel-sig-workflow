@@ -1,4 +1,4 @@
-latency-wait: "15"
+latency-wait: "60"
 jobscript: "lsf_jobscript.sh"
 use-conda: "False"
 use-singularity: "true"
