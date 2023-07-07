@@ -12,7 +12,8 @@ out_dir: "/mnt/scratcha/fmlab/smith10/gel/"
 input_dir: "/mnt/scratcha/fmlab/smith10/gel/bams/"
 
 # Set singularity image base url
-image_base_url: "library://phil9s/gel-pl/"
+#image_base_url: "library://phil9s/gel-pl/"
+image_base_url: "docker://phil9s/"
 
 ## Non-functional
 #image_base_url: "library://docker-cloud-sylabs-io.artifactory.aws.gel.ac/phil9s/gel-pl/"
