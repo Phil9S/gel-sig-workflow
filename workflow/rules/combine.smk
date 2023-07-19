@@ -8,7 +8,9 @@ rule combine:
     resources:
         mem_mb=8000,
         threads=1,
-        time="01:00:00"
+        time="01:00:00" # slurm
+        #time=60 # lsf
+    threads: 1
     shell:
         """
         Rscript --vanilla workflow/scripts/combine_ascat.R {output} {input}
