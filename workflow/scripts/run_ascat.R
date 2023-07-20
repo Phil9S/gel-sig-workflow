@@ -88,6 +88,8 @@ ascat.output = ascat.runAscat(ascat.bc, gamma=1, write_segments = T,img.dir=OUTT
 QC = ascat.metrics(ascat.bc,ascat.output)
 
 save(ascat.bc, ascat.output, QC, file = paste0(OUTTARGET,SAMPLE,"_ASCAT_objects.Rdata"))
+write.table(x = QC, file = paste0(OUTTARGET,SAMPLE,"_QC_metrics.tsv"),append = FALSE,
+	quote = FALSE, row.names = FALSE, col.names = TRUE, sep ="\t")
 
 sessionInfo()
 
