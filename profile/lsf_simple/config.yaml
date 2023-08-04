@@ -8,6 +8,7 @@ cluster:
     -o logs/{rule}/{rule}-{wildcards}-%j.out
     -W {resources.time}
     -P {resources.account}
+    -M {resoruces.mem_mb}MB
 
 default-resources:
   - partition=short
@@ -16,6 +17,7 @@ default-resources:
   - time=120
   - account=re_gecip_cancer_pan
 
+cluster-cancel: "lsf_cancel.py"
 restart-times: 0
 max-jobs-per-second: 10
 max-status-checks-per-second: 1

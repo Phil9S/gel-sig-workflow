@@ -14,11 +14,16 @@ file.list <- lapply(INPUT,FUN=function(x){read.table(x,sep="\t",header=TRUE)})
 
 ## Compute total and collapse seg tables
 segment.table <- do.call(rbind,lapply(file.list,FUN=function(x){
-	x$segVal <- x$nAraw + x$nBraw
-	x <- x[,c("chr","startpos","endpos","segVal","sample")]
-	colnames(x) <- c("chromosome","start","end","segVal","sample")
 	return(as.data.frame(x))
 }))
+
+## remove failed arrays
+segment.table <- segment.table[!is.na(segment.table$chr),]
+
+## compute total CN
+segment.table$segVal <- segment.table$nAraw + segment.table$nBraw
+segment.table <- segment.table[,c("chr","startpos","endpos","segVal","sample")]
+colnames(segment.table) <- c("chromosome","start","end","segVal","sample")
 
 ## Set smoothing factor
 SMOOTHING_FACTOR <- 0.12
