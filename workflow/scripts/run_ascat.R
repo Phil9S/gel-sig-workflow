@@ -96,7 +96,7 @@ if(lengh(ascat.output$failedarrays) > 0){
 		chr=c(NA),startpos=c(NA),endpos=c(NA),
 		nMajor=c(NA),nMinor=c(NA),nAraw=c(NA),nBraw=c(NA))
 
-	write.table(x = d,file = paste0(OUTTARGET,SAMPLE,".segments_raw.txt"),append = FALSE,
+	write.table(x = d,file = paste0(OUTTARGET,TUMOUR_NAME,".segments_raw.txt"),append = FALSE,
 			quote = FALSE, row.names = FALSE, col.names = TRUE, sep = "\t")
 }
 
