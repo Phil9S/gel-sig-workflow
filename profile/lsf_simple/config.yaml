@@ -3,7 +3,7 @@ cluster:
   bsub
     -q {resources.partition}
     -n {threads}
-    -R {resources.mem_mb}
+    -R 'rusage[mem={resources.mem_mb}MB]'
     -J smk-{rule}-{wildcards}
     -o logs/{rule}/{rule}-{wildcards}-%j.out
     -W {resources.time}
@@ -18,12 +18,13 @@ default-resources:
   - account=re_gecip_cancer_pan
 
 cluster-cancel: "lsf_cancel.py"
-restart-times: 0
+#cluster-status: "lsf_status.py"
+restart-times: 1
 max-jobs-per-second: 10
 max-status-checks-per-second: 1
 local-cores: 1
 latency-wait: 60
-jobs: 200
+jobs: 100
 keep-going: True
 rerun-incomplete: True
 printshellcmds: True
