@@ -14,7 +14,7 @@ default-resources:
   - partition=general
   - qos=normal
   - mem_mb=1000
-  - time="01:00:00"
+  - time="02:00:00"
 # - account=""
 
 restart-times: 0 
