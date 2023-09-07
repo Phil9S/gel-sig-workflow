@@ -11,19 +11,20 @@ NORMAL <- args[3]
 TUMOUR_NAME <- args[4]
 NORMAL_NAME <- args[5]
 SEX <- args[6]
+CANCER <- args[7]
 
 # Build args
-GENOME <- args[7]
+GENOME <- args[8]
 
 # out args
-OUTPUT <- args[8]
-OUT_DIR <- args[9]
-OUTTARGET <- paste0(OUT_DIR,"fitting/",SAMPLE,"/")
-OUTTARGET_T <- paste0(OUT_DIR,"fitting/",SAMPLE,"/",TUMOUR_NAME)
-OUTTARGET_N <- paste0(OUT_DIR,"fitting/",SAMPLE,"/",NORMAL_NAME)
+OUTPUT <- args[9]
+OUT_DIR <- args[10]
+OUTTARGET <- paste0(OUT_DIR,"fitting/",CANCER,"/",SAMPLE,"/")
+OUTTARGET_T <- paste0(OUT_DIR,"fitting/",CANCER,"/",SAMPLE,"/",TUMOUR_NAME)
+OUTTARGET_N <- paste0(OUT_DIR,"fitting/",CANCER,"/",SAMPLE,"/",NORMAL_NAME)
 
 # resource args
-THREADS <- args[10]
+THREADS <- args[11]
 
 # Sing args
 ALLELECOUNTPATH <- "/usr/local/bin/alleleCounter"
@@ -91,13 +92,19 @@ save(ascat.bc, ascat.output, QC, file = paste0(OUTTARGET,SAMPLE,"_ASCAT_objects.
 write.table(x = QC, file = paste0(OUTTARGET,SAMPLE,"_QC_metrics.tsv"),append = FALSE,
 	quote = FALSE, row.names = FALSE, col.names = TRUE, sep ="\t")
 
-if(lengh(ascat.output$failedarrays) > 0){
+
+if(length(ascat.output$failedarrays) > 0){
 	d <- data.frame(sample=c(ascat.output$failedarrays),
 		chr=c(NA),startpos=c(NA),endpos=c(NA),
 		nMajor=c(NA),nMinor=c(NA),nAraw=c(NA),nBraw=c(NA))
 
-	write.table(x = d,file = paste0(OUTTARGET,TUMOUR_NAME,".segments_raw.txt"),append = FALSE,
+	write.table(x = d,file = paste0(OUTTARGET_T,".segments_raw.txt"),append = FALSE,
 			quote = FALSE, row.names = FALSE, col.names = TRUE, sep = "\t")
+} else {
+
+	sample.adjust <- read.table(paste0(OUTTARGET_T,".segments_raw.txt"),header=TRUE,sep="\t")
+	sample.adjust$sample <- rep(SAMPLE,times=nrow(sample.adjust))
+	write.table(sample.adjust,file=paste0(OUTTARGET_T,".segments_raw.txt"),row.names=FALSE,col.names=TRUE,sep="\t",quote=FALSE)
 }
 
 sessionInfo()

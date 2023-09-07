@@ -2,7 +2,7 @@ rule ascat:
     input:
         unpack(get_sample_bams)
     output:
-        out_dir+"fitting/{sample}/{sample}.segments_raw.txt"
+        out_dir+"fitting/{cancer}/{sample}/{sample}.segments_raw.txt"
     params:
         sample=get_sample_params,
         outloc=out_dir
@@ -18,9 +18,9 @@ rule ascat:
         """
         Rscript --vanilla workflow/scripts/run_ascat.R {wildcards.sample} \
             {input} {params[sample][tumour_name]} {params[sample][normal_name]} \
-            {params[sample][sex]} {params[sample][build]} {output} {params[outloc]} {resources.threads}
+            {params[sample][sex]} {params[sample][cancer]} {params[sample][build]} {output} {params[outloc]} {resources.threads}
 
-        ln -T -f {params[outloc]}fitting/{wildcards.sample}/{params[sample][tumour_name]}.segments_raw.txt \
-    {params[outloc]}fitting/{wildcards.sample}/{wildcards.sample}.segments_raw.txt 
+        ln -T -f {params[outloc]}fitting/{wildcards.cancer}/{wildcards.sample}/{params[sample][tumour_name]}.segments_raw.txt \
+    {params[outloc]}fitting/{wildcards.cancer}/{wildcards.sample}/{wildcards.sample}.segments_raw.txt 
         """
 

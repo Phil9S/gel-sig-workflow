@@ -1,8 +1,10 @@
+# imports
+from glob import glob
+
 # The main entry point of your workflow.
 include: "rules/common.smk"
 
 # file setup
-
 def get_sample_bams(wildcards):
     return {
             'tumour': samples.loc[(wildcards.sample), ["tumour_bam"]].item(),
@@ -13,19 +15,21 @@ def get_sample_params(wildcards):
             'tumour_name':  samples.loc[(wildcards.sample), ["tumour_name"]].item(),
             'normal_name':  samples.loc[(wildcards.sample), ["normal_name"]].item(),
             'sex':  samples.loc[(wildcards.sample), ["sex"]].item(),
-            'build':  samples.loc[(wildcards.sample), ["build"]].item()}
+            'build':  samples.loc[(wildcards.sample), ["build"]].item(),
+            'cancer': samples.loc[(wildcards.sample), ["cancer"]].item()}
 
-# After configuring, running snakemake -n in a clone of this repository should successfully execute a dry-run of the workflow.
-
+# Rules
 localrules: all
 
 rule all:
     input:
+        expand(out_dir+"copy_number_signatures/{cancer}/cn_signatures.rds",cancer=cancersUniq),
         out_dir+"copy_number_signatures/cn_signatures.rds"
-        # The first rule should define the default target files
-        # Subsequent target rules can be specified below. They should start with all_*.
 
 # Pipeline rules
 include: "rules/ascat.smk"
+include: "rules/combine_cancer.smk"
 include: "rules/combine.smk"
 include: "rules/get_signature_activities.smk"
+include: "rules/get_signature_activities_cancer.smk"
+

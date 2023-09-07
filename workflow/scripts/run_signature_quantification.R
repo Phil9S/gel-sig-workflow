@@ -20,7 +20,7 @@ quant.sigs <- quantifyCNSignatures(object=INPUT,
 
 saveRDS(object=quant.sigs,file=OUTPUT)
 
-OUTDIR <- dirname(OUTPUT)
+OUTDIR <- paste0(dirname(OUTPUT),"/")
 write.table(x = getActivities(quant.sigs),
 	file = paste0(OUTDIR,"cn_sigs_activites.tsv"),
 	append = FALSE, quote = FALSE,row.names = TRUE,

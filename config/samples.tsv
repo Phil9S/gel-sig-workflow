@@ -1,3 +1,17 @@
-sample	tumour_bam	normal_bam	tumour_name	normal_name	sex	build
-BRITROC-100	/mnt/scratcha/fmlab/smith10/gel/bams/100_tumor_JBLAB-4218-ready.bam	/mnt/scratcha/fmlab/smith10/gel/bams/100_normal_JBLAB-4376-ready.bam	JBLAB-4218	JBLAB-4376	XX	hg19
-BRITROC-103	/mnt/scratcha/fmlab/smith10/gel/bams/103_tumor_JBLAB-4221-ready.bam	/mnt/scratcha/fmlab/smith10/gel/bams/103_normal_JBLAB-4349-ready.bam	JBLAB-4221	JBLAB-4349	XX	hg19
+sample	tumour_bam	normal_bam	tumour_name	normal_name	sex	build	cancer
+A1	/mnt/scratcha/fmlab/smith10/gel/bams/100_tumor_JBLAB-4218-ready.bam	/mnt/scratcha/fmlab/smith10/gel/bams/100_normal_JBLAB-4376-ready.bam	JBLAB-4218	JBLAB-4376	XX	hg19	HGSC
+A2	/mnt/scratcha/fmlab/smith10/gel/bams/103_tumor_JBLAB-4221-ready.bam	/mnt/scratcha/fmlab/smith10/gel/bams/103_normal_JBLAB-4349-ready.bam	JBLAB-4221	JBLAB-4349	XX	hg19	HGSC
+A3	/mnt/scratcha/fmlab/smith10/gel/bams/100_tumor_JBLAB-4218-ready.bam	/mnt/scratcha/fmlab/smith10/gel/bams/100_normal_JBLAB-4376-ready.bam	JBLAB-4218	JBLAB-4376	XX	hg19	LGSC
+A4	/mnt/scratcha/fmlab/smith10/gel/bams/103_tumor_JBLAB-4221-ready.bam	/mnt/scratcha/fmlab/smith10/gel/bams/103_normal_JBLAB-4349-ready.bam	JBLAB-4221	JBLAB-4349	XX	hg19	LGSC
+A5	/mnt/scratcha/fmlab/smith10/gel/bams/100_tumor_JBLAB-4218-ready.bam	/mnt/scratcha/fmlab/smith10/gel/bams/100_normal_JBLAB-4376-ready.bam	JBLAB-4218	JBLAB-4376	XX	hg19	KIRC
+A6	/mnt/scratcha/fmlab/smith10/gel/bams/103_tumor_JBLAB-4221-ready.bam	/mnt/scratcha/fmlab/smith10/gel/bams/103_normal_JBLAB-4349-ready.bam	JBLAB-4221	JBLAB-4349	XX	hg19	BRCA
+A7	/mnt/scratcha/fmlab/smith10/gel/bams/100_tumor_JBLAB-4218-ready.bam	/mnt/scratcha/fmlab/smith10/gel/bams/100_normal_JBLAB-4376-ready.bam	JBLAB-4218	JBLAB-4376	XX	hg19	MYLO
+A8	/mnt/scratcha/fmlab/smith10/gel/bams/103_tumor_JBLAB-4221-ready.bam	/mnt/scratcha/fmlab/smith10/gel/bams/103_normal_JBLAB-4349-ready.bam	JBLAB-4221	JBLAB-4349	XX	hg19	MYLO
+B1	/mnt/scratcha/fmlab/smith10/gel/bams/100_tumor_JBLAB-4218-ready.bam	/mnt/scratcha/fmlab/smith10/gel/bams/100_normal_JBLAB-4376-ready.bam	JBLAB-4218	JBLAB-4376	XX	hg19	LGG
+B2	/mnt/scratcha/fmlab/smith10/gel/bams/103_tumor_JBLAB-4221-ready.bam	/mnt/scratcha/fmlab/smith10/gel/bams/103_normal_JBLAB-4349-ready.bam	JBLAB-4221	JBLAB-4349	XX	hg19	SARC
+B3	/mnt/scratcha/fmlab/smith10/gel/bams/100_tumor_JBLAB-4218-ready.bam	/mnt/scratcha/fmlab/smith10/gel/bams/100_normal_JBLAB-4376-ready.bam	JBLAB-4218	JBLAB-4376	XX	hg19	SARC
+B4	/mnt/scratcha/fmlab/smith10/gel/bams/103_tumor_JBLAB-4221-ready.bam	/mnt/scratcha/fmlab/smith10/gel/bams/103_normal_JBLAB-4349-ready.bam	JBLAB-4221	JBLAB-4349	XX	hg19	SARC
+B5	/mnt/scratcha/fmlab/smith10/gel/bams/100_tumor_JBLAB-4218-ready.bam	/mnt/scratcha/fmlab/smith10/gel/bams/100_normal_JBLAB-4376-ready.bam	JBLAB-4218	JBLAB-4376	XX	hg19	KIRP
+B6	/mnt/scratcha/fmlab/smith10/gel/bams/103_tumor_JBLAB-4221-ready.bam	/mnt/scratcha/fmlab/smith10/gel/bams/103_normal_JBLAB-4349-ready.bam	JBLAB-4221	JBLAB-4349	XX	hg19	KIRP
+B7	/mnt/scratcha/fmlab/smith10/gel/bams/100_tumor_JBLAB-4218-ready.bam	/mnt/scratcha/fmlab/smith10/gel/bams/100_normal_JBLAB-4376-ready.bam	JBLAB-4218	JBLAB-4376	XX	hg19	PRAD
+B8	/mnt/scratcha/fmlab/smith10/gel/bams/103_tumor_JBLAB-4221-ready.bam	/mnt/scratcha/fmlab/smith10/gel/bams/103_normal_JBLAB-4349-ready.bam	JBLAB-4221	JBLAB-4349	XX	hg19	PRAD

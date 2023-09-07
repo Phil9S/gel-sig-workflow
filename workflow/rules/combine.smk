@@ -1,6 +1,6 @@
 rule combine:
     input:
-        expand(out_dir+"fitting/{sample}/{sample}.segments_raw.txt",sample=samples.index)
+        expand(out_dir+"copy_number_signatures/{cancer}/copy_number_segments.tsv",cancer=cancersUniq)
     output:
         out_dir+"copy_number_signatures/copy_number_segments.tsv"
     singularity:
