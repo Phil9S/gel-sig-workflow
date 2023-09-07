@@ -11,8 +11,8 @@ rule ascat:
     resources:
         mem_mb=8000,
         threads=23,
-        time="02:00:00" # slurm
-        #time=120 # lsf
+        #time="02:00:00" # slurm
+        time=120 # lsf
     threads: 23
     shell:
         """

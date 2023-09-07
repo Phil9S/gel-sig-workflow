@@ -5,13 +5,13 @@ samples: "config/samples.tsv"
 
 # If the out_dir is not "results/" then adjust the profile config to use singularity-args: "--bind {out_dir}" 
 # It is possible to specify multiple --bind arguments
-out_dir: "/mnt/scratcha/fmlab/smith10/gel/"
-#out_dir: "/re_scratch/re_gecip/cancer_pan/psmith2/"
+#out_dir: "/mnt/scratcha/fmlab/smith10/gel/"
+out_dir: "/re_scratch/re_gecip/cancer_pan/psmith2/"
 
 # Adjust the the profile config to use singularity-args: "--bind {input_dir}"
 # It is possible to specify multiple --bind arguments
-input_dir: "/mnt/scratcha/fmlab/smith10/gel/bams/"
-#input_dir: "/genomes/by_date/"
+#input_dir: "/mnt/scratcha/fmlab/smith10/gel/bams/"
+input_dir: "/genomes/by_date/"
 
 # Set singularity image base url
 image_base_url: "docker://phil9s/"

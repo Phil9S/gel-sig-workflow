@@ -11,8 +11,8 @@ rule get_signature_activities:
     resources:
         mem_mb=4000,
         threads=1,
-        time="01:00:00" # slurm
-        #time=60 # lsf
+        #time="01:00:00" # slurm
+        time=60 # lsf
     threads: 1
     shell:
         """
