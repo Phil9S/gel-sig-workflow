@@ -8,7 +8,7 @@ cluster:
     -o logs/{rule}/{rule}-{wildcards}-%j.out
     -W {resources.time}
     -P {resources.account}
-    -M {resoruces.mem_mb}MB
+    -M {resources.mem_mb}MB
 
 default-resources:
   - partition=short
