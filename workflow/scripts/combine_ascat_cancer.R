@@ -38,6 +38,8 @@ segment.table.smoothed.rounded <- segment.table %>%
   mutate(comb = cumsum(chng)) %>%
   group_by(chromosome,sample,comb) %>%
   select(-chng) %>%
+  mutate(length = end - start) %>%
+  filter(length > 100) %>%
   summarise(across(start,min),across(end,max),across(segVal,median)) %>%
   select(chromosome,start,end,segVal,sample) %>%
   mutate(chromosome = factor(chromosome,levels=c(1:22,"X","Y"))) %>%
