@@ -13,8 +13,8 @@ cluster:
 default-resources:
   - partition=general
   - qos=normal
-  - mem_mb=1000
-  - time="02:00:00"
+  - mem_mb=8000
+  - time="04:00:00"
 # - account=""
 
 restart-times: 0 
@@ -26,11 +26,11 @@ jobs: 200
 keep-going: True
 rerun-incomplete: True
 printshellcmds: True
-scheduler: greedy
+#scheduler: greedy
 use-conda: False
 use-singularity: True
 
 # Bind this to the input directory containing the BAM files and output location if not default
 # Make sure these directories match out_dir and input_dir in the config.yml
 # Comment out these lines if not required.
-singularity-args: "--bind /mnt/scratcha/fmlab/smith10/gel/bams --bind /mnt/scratcha/fmlab/smith10/gel"
+singularity-args: "--bind /mnt/scratcha/fmlab/smith10/gel/ --bind /mnt/scratcha/fmlab/smith10/ascat_pipeline/"

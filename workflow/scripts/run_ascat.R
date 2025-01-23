@@ -12,19 +12,32 @@ TUMOUR_NAME <- args[4]
 NORMAL_NAME <- args[5]
 SEX <- args[6]
 CANCER <- args[7]
-
-# Build args
 GENOME <- args[8]
+PLOIDY <- args[9]
+PURITY <- args[10]
+
+# Set manual ploidy/purity if provided
+if(PLOIDY == "Na"){
+	PLOIDY <- NA
+} else {
+	PLOIDY <- as.numeric(PLOIDY)
+}
+
+if(PURITY == "Na"){
+        PURITY <- NA
+} else {
+        PURITY <- as.numeric(PURITY)
+}
 
 # out args
-OUTPUT <- args[9]
-OUT_DIR <- args[10]
+OUTPUT <- args[11]
+OUT_DIR <- args[12]
 OUTTARGET <- paste0(OUT_DIR,"fitting/",CANCER,"/",SAMPLE,"/")
 OUTTARGET_T <- paste0(OUT_DIR,"fitting/",CANCER,"/",SAMPLE,"/",TUMOUR_NAME)
 OUTTARGET_N <- paste0(OUT_DIR,"fitting/",CANCER,"/",SAMPLE,"/",NORMAL_NAME)
 
 # resource args
-THREADS <- args[11]
+THREADS <- args[13]
 
 # Sing args
 ALLELECOUNTPATH <- "/usr/local/bin/alleleCounter"
@@ -84,7 +97,7 @@ ascat.bc = ascat.aspcf(ascat.bc,out.dir=OUTTARGET)
 
 ascat.plotSegmentedData(ascat.bc,img.dir=OUTTARGET)
 
-ascat.output = ascat.runAscat(ascat.bc, gamma=1, write_segments = T,img.dir=OUTTARGET)
+ascat.output = ascat.runAscat(ascat.bc, gamma=1, write_segments = T,img.dir=OUTTARGET,rho_manual = PURITY, psi_manual = PLOIDY)
 
 QC = ascat.metrics(ascat.bc,ascat.output)
 

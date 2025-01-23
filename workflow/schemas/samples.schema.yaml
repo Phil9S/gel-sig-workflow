@@ -20,3 +20,7 @@ required:
   - normal_name
   - sex
   - build
+  - cancer
+  - ploidy
+  - purity
+

@@ -7,7 +7,7 @@ rule get_signature_activities:
         genome=genome,
         method=method
     singularity:
-        image_base_url+"cinsignaturequantification_v1_1_2:latest"
+        image_base_url+"cinsignaturequantification:latest"
     resources:
         mem_mb=4000,
         threads=1,

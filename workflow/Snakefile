@@ -16,7 +16,9 @@ def get_sample_params(wildcards):
             'normal_name':  samples.loc[(wildcards.sample), ["normal_name"]].item(),
             'sex':  samples.loc[(wildcards.sample), ["sex"]].item(),
             'build':  samples.loc[(wildcards.sample), ["build"]].item(),
-            'cancer': samples.loc[(wildcards.sample), ["cancer"]].item()}
+            'cancer': samples.loc[(wildcards.sample), ["cancer"]].item(),
+            'ploidy': samples.loc[(wildcards.sample), ["ploidy"]].item(),
+            'purity': samples.loc[(wildcards.sample), ["purity"]].item()}
 
 # Rules
 localrules: all

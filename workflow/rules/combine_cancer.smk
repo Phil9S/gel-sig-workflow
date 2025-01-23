@@ -17,7 +17,7 @@ rule combine_cancer:
     output:
         out_dir+"copy_number_signatures/{cancer}/copy_number_segments.tsv"
     singularity:
-        image_base_url+"cinsignaturequantification_v1_1_2:latest"
+        image_base_url+"cinsignaturequantification:latest"
     resources:
         mem_mb=8000,
         threads=1,
