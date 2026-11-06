@@ -19,3 +19,17 @@ analysis/*
 !results/
 !profile
 !profile/**
+!main.nf
+!nextflow.config
+!conf
+!conf/**
+!modules
+!modules/**
+!subworkflows
+!subworkflows/**
+!bin
+!bin/**
+!containers
+!containers/**
+# local pixi environments (containers/*/pixi.toml)
+.pixi/
