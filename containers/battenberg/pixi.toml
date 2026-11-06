@@ -1,0 +1,30 @@
+[workspace]
+authors = ["Phil9S <philip.smith@cruk.cam.ac.uk>"]
+channels = ["conda-forge", "bioconda"]
+name = "battenberg"
+platforms = ["linux-64"]
+version = "3.0.0"
+
+# Dependencies for the GitHub R packages installed in the Dockerfile, plus external tools.
+[dependencies]
+r-base = "4.4.*"
+r-remotes = "*"
+r-rcolorbrewer = "*"
+r-ggplot2 = "*"
+r-readr = "*"
+r-gtools = "*"
+r-gridextra = "*"
+r-doparallel = "*"
+r-foreach = "*"
+"r-data.table" = "*"
+bioconductor-biocgenerics = "*"
+bioconductor-s4vectors = "*"
+bioconductor-iranges = "*"
+bioconductor-genomicranges = "*"
+bioconductor-variantannotation = "*"
+cancerit-allelecount = "4.3.0.*"
+impute2 = "2.3.2.*"
+# Battenberg runs Beagle with -XX:+UseParallelOldGC, which JDK 16+ rejects
+openjdk = "11.*"
+# ps for Nextflow task metrics
+procps-ng = "*"
