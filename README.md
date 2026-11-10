@@ -110,6 +110,31 @@ params {
 | `fasta`, `fasta_fai` | Strelka2 | only needed when SNVs are called by the pipeline |
 | `strelka_call_regions` | Strelka2 | optional bgzipped BED (+ `.tbi`) restricting calling to the primary assembly |
 
+#### Downloading the Battenberg reference files
+
+The bundle links above are landing pages. `bin/download_battenberg_refs.sh` pulls the files
+directly, unpacks them into the layout the defaults expect, and checks that every file listed
+in `impute_info.txt` is present:
+
+```bash
+bin/download_battenberg_refs.sh --build hg19 --out /refs/battenberg/hg19   # ~15.5 GB download
+bin/download_battenberg_refs.sh --build hg38 --out /refs/battenberg/hg38   # ~17 GB download
+```
+
+Then set `battenberg_ref_dir` to the `--out` directory. Interrupted runs resume when re-run.
+Unpacking needs about the same space again; archives are removed afterwards unless
+`--keep-archives` is given. Run it on a node with outbound internet, e.g. in `screen`/`tmux`.
+
+| Build | Source | Notes |
+|---|---|---|
+| hg19 | [ORA GRCh37 bundle](https://ora.ox.ac.uk/objects/uuid:2c1fec09-a504-49ab-9ce9-3f17bac531bc) | Loci, IMPUTE2 panel, GC/RT correction, problem loci. The published `impute_info.txt` contains a `<path_to_impute_reference_files>` placeholder, which the script fills in |
+| hg19 | [Beagle 5](https://faculty.washington.edu/browning/beagle/beagle.html) | Not in the ORA bundle: `beagle.22Jul22.46e.jar`, the 1000 Genomes phase 3 b37 `.bref3` panels and the GRCh37 PLINK maps, placed in `beagle/` and `beagle/b37/` |
+| hg19 | [Battenberg repository](https://github.com/Wedge-lab/battenberg/tree/v3.0.0) | `gcCorrect_chromosome_coordinates_hg19.txt` |
+| hg38 | [Figshare v3.0.0 bundle](https://doi.org/10.48420/30406441) | Checked against the bundle's `sha1sums.txt`. The bundle has no `impute_info.txt`, so the script writes `imputation/impute_info.txt` from the SHAPEIT2 legends/haplotypes and genetic maps, splitting chrX at the GRCh38 PAR boundaries |
+
+The IMPUTE2/SHAPEIT2 files are needed even with Beagle phasing, because Battenberg checks the
+legend files listed in `impute_info.txt`.
+
 `impute_info.txt` inside the Battenberg bundle may hold paths from the machine it was
 built on. The wrapper rewrites them to the staged bundle (it matches the trailing path
 components), so the bundle can be moved freely.
