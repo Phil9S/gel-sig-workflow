@@ -24,7 +24,21 @@ process BATTENBERG {
 
     script:
     def g = params.genomes[meta.build]
-    def opt = { name, value -> value != null && value.toString() != '' ? "--${name} '${value}'" : '' }
+    // optional reference arguments: omitted when unset for this genome build
+    def ref_args = [
+        impute_info:           g.battenberg_impute_info,
+        g1000_loci_prefix:     g.battenberg_g1000_loci_prefix,
+        g1000_alleles_prefix:  g.battenberg_g1000_alleles_prefix,
+        gc_prefix:             g.battenberg_gc_prefix,
+        rt_prefix:             g.battenberg_rt_prefix,
+        problem_loci:          g.battenberg_problem_loci,
+        chrom_coord_file:      g.battenberg_chrom_coord_file,
+        beagle_jar:            g.battenberg_beagle_jar,
+        beagle_ref_template:   g.battenberg_beagle_ref_template,
+        beagle_plink_template: g.battenberg_beagle_plink_template
+    ].findAll { k, v -> v != null && v.toString() != '' }
+     .collect { k, v -> "--${k} '${v}'" }
+     .join(' ')
     // keep the Beagle JVM heap inside the task allocation
     def beagle_mem = [[params.battenberg_beagle_max_mem.toString().toInteger(), task.memory.toGiga() - 4].min(), 1].max()
     """
@@ -40,16 +54,7 @@ process BATTENBERG {
         --sex '${meta.sex}' \\
         --genomebuild '${meta.build}' \\
         --ref_dir battenberg_ref \\
-        ${opt('impute_info',          g.battenberg_impute_info)} \\
-        ${opt('g1000_loci_prefix',    g.battenberg_g1000_loci_prefix)} \\
-        ${opt('g1000_alleles_prefix', g.battenberg_g1000_alleles_prefix)} \\
-        ${opt('gc_prefix',            g.battenberg_gc_prefix)} \\
-        ${opt('rt_prefix',            g.battenberg_rt_prefix)} \\
-        ${opt('problem_loci',         g.battenberg_problem_loci)} \\
-        ${opt('chrom_coord_file',     g.battenberg_chrom_coord_file)} \\
-        ${opt('beagle_jar',           g.battenberg_beagle_jar)} \\
-        ${opt('beagle_ref_template',  g.battenberg_beagle_ref_template)} \\
-        ${opt('beagle_plink_template', g.battenberg_beagle_plink_template)} \\
+        ${ref_args} \\
         --use_beagle ${params.battenberg_use_beagle} \\
         --beagle_max_mem ${beagle_mem} \\
         --beagle_window ${params.battenberg_beagle_window} \\
