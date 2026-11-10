@@ -1,4 +1,2 @@
-*.smk linguist-language=Python
-Snakefile linguist-language=Python
 # pixi lockfiles: generated, never merge or diff line by line
 pixi.lock merge=binary linguist-language=YAML linguist-generated=true -diff

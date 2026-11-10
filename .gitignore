@@ -7,8 +7,6 @@ analysis/*
 !config/*
 !resources
 !resources/*
-!workflow
-!workflow/**
 !.gitignore
 !.gitattributes
 !.editorconfig
@@ -17,8 +15,6 @@ analysis/*
 !LICENSE
 !README.md
 !results/
-!profile
-!profile/**
 !main.nf
 !nextflow.config
 !conf

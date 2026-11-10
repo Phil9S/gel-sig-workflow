@@ -34,9 +34,6 @@ config/samples.tsv
  CN_SUMMARY   one row per sample: summary/cn_pipeline_summary.tsv
 ```
 
-The Nextflow pipeline lives alongside the Snakemake signature workflow (`workflow/`)
-and reads the same `config/samples.tsv`.
-
 ## Requirements
 
 - Nextflow ≥ 24.04 and Java 17+
@@ -48,7 +45,7 @@ and reads the same `config/samples.tsv`.
 | Step | Default image | Notes |
 |---|---|---|
 | Battenberg | `phil9s/battenberg:3.0.0` | **build and push first** from `containers/battenberg/`: pixi environment (R 4.4.3, alleleCounter 4.3.0, IMPUTE2 2.3.2, OpenJDK 11) plus Battenberg v3.0.0, ASCAT v3.2.0 and copynumber from GitHub |
-| ASCAT, alleleCounter | `phil9s/ascat_v3_1_2:latest` | the image used by the Snakemake workflow; contains `/ref/<build>/` G1000 references |
+| ASCAT, alleleCounter | `phil9s/ascat_v3_1_2@sha256:1d97ba23…` | ASCAT and alleleCounter with the G1000 references in `/ref/<build>/` (no `chr` prefix; contig names are matched to each BAM at run time via `chr_prefix`). Pinned by digest because the repository only has a mutable `latest` tag |
 | sWGS | `phil9s/swgs-absolutecn:v2.0.0` | swgs-absolutecn v2.0.0 release: R 4.3.3, rswgsabsolutecn v1.1.1, QDNAseqmod, samtools; stage-2 scripts in `/app/workflow/scripts` |
 | Strelka2 | `quay.io/biocontainers/strelka:2.9.10--h9ee0642_1` | |
 | R utilities | `rocker/tidyverse:4.3.2` (to be replaced) | purity extraction, VAF evaluation, summary; needs R with optparse, vcfR, dplyr and ggplot2 |
@@ -77,7 +74,8 @@ expects (`<registry>-<image>-<tag>.img`, e.g. `phil9s-battenberg-3.0.0.img`):
 
 ```bash
 singularity pull phil9s-battenberg-3.0.0.img docker://phil9s/battenberg:3.0.0
-singularity pull phil9s-ascat_v3_1_2-latest.img docker://phil9s/ascat_v3_1_2:latest
+singularity pull phil9s-ascat_v3_1_2@sha256-1d97ba239165650052b549418b503a1080e37c8b0df04cb732a2142266db5b3f.img \
+    docker://phil9s/ascat_v3_1_2@sha256:1d97ba239165650052b549418b503a1080e37c8b0df04cb732a2142266db5b3f
 singularity pull phil9s-swgs-absolutecn-v2.0.0.img docker://phil9s/swgs-absolutecn:v2.0.0
 singularity pull quay.io-biocontainers-strelka-2.9.10--h9ee0642_1.img docker://quay.io/biocontainers/strelka:2.9.10--h9ee0642_1
 singularity pull rocker-tidyverse-4.3.2.img docker://rocker/tidyverse:4.3.2
@@ -152,7 +150,7 @@ components), so the bundle can be moved freely.
 | `snv_vcf` | no | somatic SNV VCF (Strelka2, Mutect2 or any VCF with `AD` or `AF`+`DP`). Empty/`NA` → Strelka2 is run |
 | `swgs_smooth` | no | swgs-absolutecn `smooth` flag: `TRUE` re-segments a noisy sWGS profile (default `--swgs_smooth false`) |
 
-Other columns (e.g. `ploidy`/`purity` used by the Snakemake ASCAT rule) are ignored.
+Other columns are ignored.
 
 ## Running
 
@@ -170,7 +168,7 @@ nextflow run main.nf -profile lsf,singularity \
 nextflow run main.nf -profile pbs,singularity --queue batch --cluster_account my_project
 nextflow run main.nf -profile pbspro,singularity --queue workq
 
-# GEL Research Environment (LSF + Singularity, paths from config/config.yaml)
+# GEL Research Environment (LSF + Singularity, paths in conf/gel.config)
 nextflow run main.nf -profile gel
 
 # Local machine
