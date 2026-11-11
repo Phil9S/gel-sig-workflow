@@ -1,2 +1,5 @@
+# container build contexts are used on Linux: keep LF even with core.autocrlf (a CRLF
+# ref_files.md5 or Dockerfile breaks the build)
+containers/** text eol=lf
 # pixi lockfiles: generated, never merge or diff line by line
 pixi.lock merge=binary linguist-language=YAML linguist-generated=true -diff

@@ -45,7 +45,7 @@ config/samples.tsv
 | Step | Default image | Notes |
 |---|---|---|
 | Battenberg | `phil9s/battenberg:3.0.0` | **build and push first** from `containers/battenberg/`: pixi environment (R 4.4.3, alleleCounter 4.3.0, IMPUTE2 2.3.2, OpenJDK 11) plus Battenberg v3.0.0, ASCAT v3.2.0 and copynumber from GitHub |
-| ASCAT, alleleCounter | `phil9s/ascat_v3_1_2@sha256:1d97ba23…` | ASCAT and alleleCounter with the G1000 references in `/ref/<build>/` (no `chr` prefix; contig names are matched to each BAM at run time via `chr_prefix`). Pinned by digest because the repository only has a mutable `latest` tag |
+| ASCAT, alleleCounter | `phil9s/ascat:3.2.0` | built from `containers/ascat/` (see below): ASCAT v3.2.0 and alleleCounter 4.3.0 with ASCAT's WGS G1000 references in `/ref/<build>/` (no `chr` prefix; contig names are matched to each BAM at run time via `chr_prefix`). The repository is `phil9s/ascat`, tagged by ASCAT version; it replaces `phil9s/ascat_v3_1_2` |
 | sWGS | `phil9s/swgs-absolutecn:v2.0.0` | swgs-absolutecn v2.0.0 release: R 4.3.3, rswgsabsolutecn v1.1.1, QDNAseqmod, samtools; stage-2 scripts in `/app/workflow/scripts` |
 | Strelka2 | `quay.io/biocontainers/strelka:2.9.10--h9ee0642_1` | |
 | R utilities | `rocker/tidyverse:4.3.2` (to be replaced) | purity extraction, VAF evaluation, summary; needs R with optparse, vcfR, dplyr and ggplot2 |
@@ -65,6 +65,28 @@ IMPUTE2 is only used with `--battenberg_use_beagle false`. Its binary is a stati
 build that needs the kernel's legacy vsyscall page, so it crashes (exit 139) on hosts booted with
 `vsyscall=none`, such as WSL2. The stock bioconda IMPUTE2 container has the same limitation.
 
+The ASCAT image is built the same way from `containers/ascat/`, with ASCAT v3.2.0 (the latest
+release, also used in the Battenberg image; the image it replaces had v3.1.2) and alleleCounter
+4.3.0 (as in the Battenberg image; bioconda's 4.2.1 needs a zlib older than current R packages
+allow). The only change between v3.1.2 and v3.2.0 in the ASCAT functions `bin/run_ascat_snp6.R`
+calls is two new `ascat.getBAFsAndLogRs()` arguments, `tumour_only_mode = FALSE` and
+`loci_binsize = 1`, whose defaults keep the previous paired, unbinned behaviour. A separate stage downloads ASCAT's WGS 1000 Genomes
+loci, alleles, GC and RT files for hg19 and hg38 from [Zenodo](https://zenodo.org/records/14008443),
+checks them against `containers/ascat/ref_files.md5` and unpacks them to `/ref/<build>/`, so no
+archives reach the final image. The compiler toolchain that conda's `r-base` pulls in is removed
+after ASCAT is installed, and the build ends with a smoke test (ASCAT loads, PNG output,
+alleleCounter, reference files). The image is about 0.63 GB compressed, against 2.27 GB for
+`phil9s/ascat_v3_1_2`; most of it is the 1.6 GB of reference data.
+
+```bash
+docker build -t phil9s/ascat:3.2.0 containers/ascat
+docker push phil9s/ascat:3.2.0
+```
+
+Images go to the `phil9s/ascat` repository with the ASCAT version as the tag. For a new ASCAT
+release, change `ASCAT_REF` in the Dockerfile and `version` in `pixi.toml`, build and push with
+the new tag, and update `container_ascat` and `container_allelecounter` in `nextflow.config`.
+
 Override any image with `--container_battenberg`, `--container_ascat`, `--container_allelecounter`,
 `--container_swgs`, `--container_strelka`, `--container_r`.
 
@@ -74,8 +96,7 @@ expects (`<registry>-<image>-<tag>.img`, e.g. `phil9s-battenberg-3.0.0.img`):
 
 ```bash
 singularity pull phil9s-battenberg-3.0.0.img docker://phil9s/battenberg:3.0.0
-singularity pull phil9s-ascat_v3_1_2@sha256-1d97ba239165650052b549418b503a1080e37c8b0df04cb732a2142266db5b3f.img \
-    docker://phil9s/ascat_v3_1_2@sha256:1d97ba239165650052b549418b503a1080e37c8b0df04cb732a2142266db5b3f
+singularity pull phil9s-ascat-3.2.0.img docker://phil9s/ascat:3.2.0
 singularity pull phil9s-swgs-absolutecn-v2.0.0.img docker://phil9s/swgs-absolutecn:v2.0.0
 singularity pull quay.io-biocontainers-strelka-2.9.10--h9ee0642_1.img docker://quay.io/biocontainers/strelka:2.9.10--h9ee0642_1
 singularity pull rocker-tidyverse-4.3.2.img docker://rocker/tidyverse:4.3.2
@@ -331,3 +352,7 @@ nextflow run main.nf -profile local -stub-run --samples test_samples.tsv --outdi
 ## Authors
 
 * Philip Smith (@phil9s)
+
+## License
+
+Licensed under the GNU General Public License v3.0 (GPL-3.0); see [LICENSE](LICENSE).
