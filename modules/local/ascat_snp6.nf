@@ -1,14 +1,15 @@
 // ASCAT at SNP6 loci using alleleCounter on tumour/normal WGS BAMs
 
 // SNP6-restricted ASCAT references, once per build.
-// Without g1000_dir the 1000 Genomes references in the container under /ref/<build>/ are used.
+// Without positions or g1000_dir, the SNP6 positions and 1000 Genomes references in the
+// container under /ref/<build>/ are used.
 process ASCAT_SNP6_REFERENCE {
     tag "${build}"
     label 'process_single'
     container "${params.container_ascat}"
 
     input:
-    tuple val(build), path(positions), path(g1000_dir, stageAs: 'g1000_ref')
+    tuple val(build), path(positions, stageAs: 'snp6_positions/*'), path(g1000_dir, stageAs: 'g1000_ref')
 
     output:
     tuple val(build), path("ascat_snp6_${build}"), emit: ref
@@ -16,10 +17,11 @@ process ASCAT_SNP6_REFERENCE {
     script:
     def g = params.genomes[build]
     def base = g1000_dir ? 'g1000_ref/' : "/ref/${build}/"
+    def snp6 = positions ? "${positions}" : "/ref/${build}/${g.snp6_positions_file}"
     def rt = g.ascat_rt_file ? "--rt ${base}${g.ascat_rt_file}" : ''
     """
     prepare_snp6_reference.sh \\
-        --positions ${positions} \\
+        --positions ${snp6} \\
         --loci-prefix ${base}${g.ascat_g1000_loci_prefix} \\
         --alleles-prefix ${base}${g.ascat_g1000_alleles_prefix} \\
         --gc ${base}${g.ascat_gc_file} \\

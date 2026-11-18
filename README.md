@@ -45,7 +45,7 @@ config/samples.tsv
 | Step | Default image | Notes |
 |---|---|---|
 | Battenberg | `phil9s/battenberg:3.0.0` | **build and push first** from `containers/battenberg/`: pixi environment (R 4.4.3, alleleCounter 4.3.0, IMPUTE2 2.3.2, OpenJDK 11) plus Battenberg v3.0.0, ASCAT v3.2.0 and copynumber from GitHub |
-| ASCAT, alleleCounter | `phil9s/ascat:3.2.0` | built from `containers/ascat/` (see below): ASCAT v3.2.0 and alleleCounter 4.3.0 with ASCAT's WGS G1000 references in `/ref/<build>/` (no `chr` prefix; contig names are matched to each BAM at run time via `chr_prefix`). The repository is `phil9s/ascat`, tagged by ASCAT version; it replaces `phil9s/ascat_v3_1_2` |
+| ASCAT, alleleCounter | `phil9s/ascat:3.2.0-1` | built from `containers/ascat/` (see below): ASCAT v3.2.0 and alleleCounter 4.3.0 with ASCAT's WGS G1000 references and SNP6 positions in `/ref/<build>/` (no `chr` prefix; contig names are matched to each BAM at run time via `chr_prefix`). The repository is `phil9s/ascat`, tagged `<ASCAT version>-<image revision>`; it replaces `phil9s/ascat_v3_1_2` |
 | sWGS | `phil9s/swgs-absolutecn:v2.0.0` | swgs-absolutecn v2.0.0 release: R 4.3.3, rswgsabsolutecn v1.1.1, QDNAseqmod, samtools; stage-2 scripts in `/app/workflow/scripts` |
 | Strelka2 | `quay.io/biocontainers/strelka:2.9.10--h9ee0642_1` | |
 | R utilities | `rocker/tidyverse:4.3.2` (to be replaced) | purity extraction, VAF evaluation, summary; needs R with optparse, vcfR, dplyr and ggplot2 |
@@ -73,19 +73,27 @@ calls is two new `ascat.getBAFsAndLogRs()` arguments, `tumour_only_mode = FALSE`
 `loci_binsize = 1`, whose defaults keep the previous paired, unbinned behaviour. A separate stage downloads ASCAT's WGS 1000 Genomes
 loci, alleles, GC and RT files for hg19 and hg38 from [Zenodo](https://zenodo.org/records/14008443),
 checks them against `containers/ascat/ref_files.md5` and unpacks them to `/ref/<build>/`, so no
-archives reach the final image. The compiler toolchain that conda's `r-base` pulls in is removed
+archives reach the final image. The same stage adds ASCAT's SNP6 positions (`SNPpos.txt`, hg19;
+same positions as `GC_AffySNP6_102015.txt`) as `/ref/hg19/SNPpos.txt`. No GRCh38 version is
+published, so `containers/ascat/lift_snppos.sh` lifts it over with UCSC `liftOver` and the
+`hg19ToHg38` chain into `/ref/hg38/SNPpos_hg38.txt`. It keeps loci that map to one base on the
+same chromosome: 1,837,375 of 1,838,128 positions (753 dropped), and the build fails if fewer than
+95% lift over. The compiler toolchain that conda's `r-base` pulls in is removed
 after ASCAT is installed, and the build ends with a smoke test (ASCAT loads, PNG output,
-alleleCounter, reference files). The image is about 0.63 GB compressed, against 2.27 GB for
+alleleCounter, reference files). The image is about 0.66 GB compressed, against 2.27 GB for
 `phil9s/ascat_v3_1_2`; most of it is the 1.6 GB of reference data.
 
 ```bash
-docker build -t phil9s/ascat:3.2.0 containers/ascat
-docker push phil9s/ascat:3.2.0
+docker build -t phil9s/ascat:3.2.0-1 containers/ascat
+docker push phil9s/ascat:3.2.0-1
 ```
 
-Images go to the `phil9s/ascat` repository with the ASCAT version as the tag. For a new ASCAT
-release, change `ASCAT_REF` in the Dockerfile and `version` in `pixi.toml`, build and push with
-the new tag, and update `container_ascat` and `container_allelecounter` in `nextflow.config`.
+Images go to the `phil9s/ascat` repository, tagged `<ASCAT version>-<image revision>`. For a new
+ASCAT release, change `ASCAT_REF` in the Dockerfile and `version` in `pixi.toml` and reset the
+revision to 1; for an image-only change (such as `3.2.0-1`, which added the SNP6 positions), bump
+the revision. Update the version label in the Dockerfile, build and push with the new tag, and
+update `container_ascat` and `container_allelecounter` in `nextflow.config`. Never re-push an
+existing tag.
 
 Override any image with `--container_battenberg`, `--container_ascat`, `--container_allelecounter`,
 `--container_swgs`, `--container_strelka`, `--container_r`.
@@ -96,7 +104,7 @@ expects (`<registry>-<image>-<tag>.img`, e.g. `phil9s-battenberg-3.0.0.img`):
 
 ```bash
 singularity pull phil9s-battenberg-3.0.0.img docker://phil9s/battenberg:3.0.0
-singularity pull phil9s-ascat-3.2.0.img docker://phil9s/ascat:3.2.0
+singularity pull phil9s-ascat-3.2.0-1.img docker://phil9s/ascat:3.2.0-1
 singularity pull phil9s-swgs-absolutecn-v2.0.0.img docker://phil9s/swgs-absolutecn:v2.0.0
 singularity pull quay.io-biocontainers-strelka-2.9.10--h9ee0642_1.img docker://quay.io/biocontainers/strelka:2.9.10--h9ee0642_1
 singularity pull rocker-tidyverse-4.3.2.img docker://rocker/tidyverse:4.3.2
@@ -112,7 +120,6 @@ params {
     genomes {
         hg19 {
             battenberg_ref_dir = '/refs/battenberg/hg19'
-            snp6_positions     = '/refs/ascat/GC_AffySNP6_102015.txt'
             fasta              = '/refs/GRCh37/genome.fa'
         }
     }
@@ -125,7 +132,8 @@ params {
 | `battenberg_ref_dir` | Battenberg | unpacked Battenberg bundle ([GRCh37](https://ora.ox.ac.uk/objects/uuid:2c1fec09-a504-49ab-9ce9-3f17bac531bc), [GRCh38 v3.0.0](https://doi.org/10.48420/30406441)) |
 | `battenberg_*` | Battenberg | paths **relative to** `battenberg_ref_dir` (absolute paths also accepted). Defaults follow `inst/example/battenberg_wgs.R` (v3.0.0); check them against your unpacked bundle |
 | `ascat_g1000_dir` | ASCAT | ASCAT 1000 Genomes WGS loci/alleles/GC/RT ([Zenodo](https://zenodo.org/records/14008443)); `null` uses `/ref/<build>/` inside the ASCAT container |
-| `snp6_positions` | ASCAT | tab-separated SNP6.0 positions with chromosome/position columns, e.g. ASCAT's `GC_AffySNP6_102015.txt` (hg19). For hg38, supply lifted-over positions |
+| `snp6_positions` | ASCAT | tab-separated SNP6.0 positions with chromosome/position columns; `null` (default) uses `snp6_positions_file` inside the ASCAT container |
+| `snp6_positions_file` | ASCAT | file name in the container's `/ref/<build>/`: `SNPpos.txt` (hg19, from [Zenodo](https://zenodo.org/records/14008443)) or `SNPpos_hg38.txt` (lifted over at image build) |
 | `fasta`, `fasta_fai` | Strelka2 | only needed when SNVs are called by the pipeline |
 | `strelka_call_regions` | Strelka2 | optional bgzipped BED (+ `.tbi`) restricting calling to the primary assembly |
 
@@ -343,7 +351,7 @@ Differences from running swgs-absolutecn directly:
 
 `-stub-run` exercises the full DAG with placeholder outputs (each process has a `stub:`
 block). The BAMs, their indexes and the configured reference paths (`battenberg_ref_dir`,
-`snp6_positions`, `fasta`) must exist, but they can be empty placeholder files:
+`fasta`, and `snp6_positions` if set) must exist, but they can be empty placeholder files:
 
 ```bash
 nextflow run main.nf -profile local -stub-run --samples test_samples.tsv --outdir stub_test

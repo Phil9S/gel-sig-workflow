@@ -15,7 +15,7 @@ workflow ASCAT_SNP6 {
         .map { build ->
             def g = params.genomes[build]
             tuple(build,
-                  file(g.snp6_positions, checkIfExists: true),
+                  g.snp6_positions ? file(g.snp6_positions, checkIfExists: true) : [],
                   g.ascat_g1000_dir ? file(g.ascat_g1000_dir, checkIfExists: true) : [])
         }
     ASCAT_SNP6_REFERENCE(ch_ref_input)

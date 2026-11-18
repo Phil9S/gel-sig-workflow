@@ -114,8 +114,8 @@ def readSamplesheet(String path) {
         if (!genome.battenberg_ref_dir) {
             error("Sample '${id}': params.genomes.${build}.battenberg_ref_dir is not set (see conf/genomes.config)")
         }
-        if (!params.skip_ascat && !genome.snp6_positions) {
-            error("Sample '${id}': params.genomes.${build}.snp6_positions is not set; set it or use --skip_ascat")
+        if (!params.skip_ascat && !genome.snp6_positions && !genome.snp6_positions_file) {
+            error("Sample '${id}': params.genomes.${build}.snp6_positions and snp6_positions_file are both unset; set one or use --skip_ascat")
         }
         def has_vcf = isSet(row.snv_vcf)
         if (needs_snv_reference && !has_vcf && !genome.fasta) {
