@@ -96,6 +96,16 @@ EOF
     sed 's#<path_to_impute_reference_files>#battenberg_impute_v3#g' \
         .archives/impute_info.template.txt > impute_info.txt
 
+    # impute_info.txt names chromosome X 'X', so Battenberg asks for <prefix>X files, but the
+    # bundle ships X as chr23 (the loci inside already use 'X' as the contig name)
+    ( cd battenberg_1000genomesloci2012_v3
+      link 1000genomesloci2012_chr23.txt    1000genomesloci2012_chrX.txt
+      link 1000genomesAlleles2012_chr23.txt 1000genomesAlleles2012_chrX.txt )
+    ( cd battenberg_wgs_gc_correction_1000g_v3
+      link 1000_genomes_GC_corr_chr_23.txt.gz 1000_genomes_GC_corr_chr_X.txt.gz )
+    ( cd battenberg_wgs_replic_correction_1000g_v3
+      link 1000_genomes_replication_timing_chr_23.txt.gz 1000_genomes_replication_timing_chr_X.txt.gz )
+
     echo "[2/3] Beagle 5 jar, b37 reference panels and PLINK maps"
     mkdir -p beagle/b37
     fetch https://faculty.washington.edu/browning/beagle/beagle.22Jul22.46e.jar beagle/beagle.22Jul22.46e.jar
@@ -167,6 +177,23 @@ INFO=$([ "$BUILD" = hg19 ] && echo impute_info.txt || echo imputation/impute_inf
 missing=$(cut -f2-4 "$INFO" | tr '\t' '\n' | while read -r f; do [ -e "$f" ] || echo "$f"; done)
 if [ -n "$missing" ]; then
     echo "ERROR: files listed in $INFO are missing:" >&2
+    echo "$missing" | head >&2
+    exit 1
+fi
+
+# Battenberg builds <prefix><chrom>.txt for every chromosome in impute_info.txt
+if [ "$BUILD" = hg19 ]; then
+    prefixes="battenberg_1000genomesloci2012_v3/1000genomesloci2012_chr% battenberg_1000genomesloci2012_v3/1000genomesAlleles2012_chr%
+              battenberg_wgs_gc_correction_1000g_v3/1000_genomes_GC_corr_chr_%.gz battenberg_wgs_replic_correction_1000g_v3/1000_genomes_replication_timing_chr_%.gz"
+else
+    prefixes="1000G_loci_hg38/1kg.phase3.v5a_GRCh38nounref_loci_chrstring_chr% 1000G_loci_hg38/1kg.phase3.v5a_GRCh38nounref_allele_index_chr%
+              GC_correction_hg38/1000G_GC_chr%.gz RT_correction_hg38/1000G_RT_chr%.gz"
+fi
+missing=$(for c in $(cut -f1 "$INFO" | sort -u); do
+    for p in $prefixes; do f=${p/\%/$c.txt}; [ -e "$f" ] || echo "$f"; done
+done)
+if [ -n "$missing" ]; then
+    echo "ERROR: per-chromosome reference files are missing:" >&2
     echo "$missing" | head >&2
     exit 1
 fi
